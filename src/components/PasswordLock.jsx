@@ -14,7 +14,7 @@ export default function PasswordLock({ onUnlock, playChime }) {
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
-  const expectedPin = String(birthdayConfig.secretPin || '1110').slice(0, 4);
+  const expectedPin = String(birthdayConfig.secretPin || '2006').slice(0, 4);
 
   const attemptUnlock = (candidatePin = pin) => {
     if (isUnlocking) return;
@@ -115,34 +115,14 @@ export default function PasswordLock({ onUnlock, playChime }) {
             src="/animations/sparkles.json"
             className="absolute -inset-4 z-0 opacity-85"
           />
-          <div className="relative z-10 flex h-42 w-44 items-center justify-center sm:h-44 sm:w-48">
-            <svg
-              viewBox="0 0 220 200"
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full drop-shadow-sm"
-            >
-              <path
-                d="M110 184 C110 184 18 124 18 66 C18 33 44 14 73 14 C91 14 104 24 110 36 C116 24 129 14 147 14 C176 14 202 33 202 66 C202 124 110 184 110 184 Z"
-                fill="#FCE4EC"
-                stroke="#FFFFFF"
-                strokeWidth="7"
-              />
-              <path
-                d="M110 174 C110 174 28 119 28 67 C28 40 49 24 73 24 C89 24 102 33 110 45 C118 33 131 24 147 24 C171 24 192 40 192 67 C192 119 110 174 110 174 Z"
-                fill="none"
-                stroke="#EFA9C2"
-                strokeWidth="2.5"
-                strokeDasharray="5 4"
-              />
-            </svg>
+          <div className="polka-pastel relative z-10 flex h-36 w-36 items-center justify-center rounded-full border-4 border-white shadow-md sm:h-40 sm:w-40">
             <TeddyIllustration
               mood="peek"
-              className="relative z-10 mt-1 h-30 w-30 sm:h-32 sm:w-32"
+              className="h-32 w-32 sm:h-36 sm:w-36"
             />
             <span
-              className={`absolute right-3 bottom-2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-sm transition-colors ${
-                isUnlocking ? 'bg-[#9E3C65] text-white' : 'bg-[#F8C8DC] text-[#513B48]'
-              }`}
+              className={`absolute -right-1 -bottom-1 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-sm transition-colors ${isUnlocking ? 'bg-[#9E3C65] text-white' : 'bg-[#F8C8DC] text-[#513B48]'
+                }`}
               aria-hidden="true"
             >
               {isUnlocking ? (
@@ -181,11 +161,10 @@ export default function PasswordLock({ onUnlock, playChime }) {
               return (
                 <div
                   key={idx}
-                  className={`flex h-13 w-12 items-center justify-center rounded-2xl border-2 text-lg font-bold transition-all sm:h-14 sm:w-14 ${
-                    filled
-                      ? 'border-[#9E3C65] bg-[#FCE4EC] text-[#9E3C65] shadow-xs'
-                      : 'border-[#F8C8DC] bg-[#FFF8F3] text-[#C96B91]/40'
-                  }`}
+                  className={`flex h-13 w-12 items-center justify-center rounded-2xl border-2 text-lg font-bold transition-all sm:h-14 sm:w-14 ${filled
+                    ? 'border-[#9E3C65] bg-[#FCE4EC] text-[#9E3C65] shadow-xs'
+                    : 'border-[#F8C8DC] bg-[#FFF8F3] text-[#C96B91]/40'
+                    }`}
                   aria-hidden="true"
                 >
                   {filled ? (

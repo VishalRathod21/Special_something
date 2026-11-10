@@ -20,8 +20,8 @@ export const birthdayConfig = {
   // --------------------------------------------------------------------------
   // 2. SCREEN 01 — SECRET BIRTHDAY LOCK
   // --------------------------------------------------------------------------
-  secretPin: '1110',
-  pinHint: 'Psst! Check the birthday invite card (demo code: 1110)',
+  secretPin: '2006',
+  pinHint: 'Psst! Think of your special year 🎀 (code: 2006)',
   lockScreen: {
     heading: 'Hey Vanshika! 🎀',
     subheading: 'A little birthday surprise from a friend is waiting for you...',
