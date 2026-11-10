@@ -977,8 +977,10 @@ export default function MusicPlayer({ audio, onNext }) {
                 />
                 <p>
                   Official release by{' '}
-                  <strong className="text-[#513B48]">RH Rahat</strong> on
-                  YouTube. Use the pink Turntable controls above to keep it
+                  <strong className="text-[#513B48]">
+                    {currentTrack?.artist || 'the official artist'}
+                  </strong>{' '}
+                  on YouTube. Use the pink Turntable controls above to keep it
                   playing smoothly as you explore other birthday pages, or press{' '}
                   <strong className="text-[#513B48]">Play</strong> directly in
                   the player below.

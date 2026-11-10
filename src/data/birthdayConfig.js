@@ -51,24 +51,6 @@ export const birthdayConfig = {
     playlistHeading: "Vanshika's Bollywood Birthday Playlist 🎀",
     tracks: [
       {
-        id: 'uff-teri-adaa',
-        title: 'Uff Teri Adaa',
-        artist: 'Shankar Mahadevan, Alyssa Mendonsa',
-        movie: 'Karthik Calling Karthik',
-        note: 'Upbeat Bollywood sparkle to kick off your birthday mood ✨',
-        src: 'https://p.scdn.co/mp3-preview/80057064bc807ab34cce907dc2157809629e5f63',
-        fallbackSrc:
-          'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ad/0f/3b/ad0f3bad-cd7d-2db8-7be0-4c1c723dd51c/mzaf_12440985831113512580.plus.aac.p.m4a',
-        coverArt:
-          'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0278c72423428611cae4c56187',
-        spotifyId: '4CxqdcO9v5V5DDVKmB4Tk9',
-        spotifyUri: 'spotify:track:4CxqdcO9v5V5DDVKmB4Tk9',
-        spotifyUrl: 'https://open.spotify.com/track/4CxqdcO9v5V5DDVKmB4Tk9',
-        spotifyEmbedUrl:
-          'https://open.spotify.com/embed/track/4CxqdcO9v5V5DDVKmB4Tk9?utm_source=generator',
-        accent: '#F8C8DC',
-      },
-      {
         id: 'pretty-woman',
         title: 'Pretty Woman',
         artist: 'Shankar-Ehsaan-Loy, Shankar Mahadevan, Ravi Khote',
@@ -85,24 +67,6 @@ export const birthdayConfig = {
         spotifyEmbedUrl:
           'https://open.spotify.com/embed/track/3rsx3pDYM3a08O0Yu3Tq6V?utm_source=generator',
         accent: '#EFA9C2',
-      },
-      {
-        id: 'dildaara',
-        title: 'Dildaara',
-        artist: 'Shafqat Amanat Ali, Vishal-Shekhar',
-        movie: 'Ra.One',
-        note: 'Warm melodic birthday serenade from start to finish 🌸',
-        src: 'https://p.scdn.co/mp3-preview/4087d46a133ce3d0be1c18ef104a28466115f63c',
-        fallbackSrc:
-          'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/61/fe/d5/61fed53f-5cf3-4290-b6b5-3b67ad2ea860/mzaf_13755335953336148900.plus.aac.p.m4a',
-        coverArt:
-          'https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02f7b432d126108aca80eee4f8',
-        spotifyId: '483U8EAfsAfp9J2r5et2rr',
-        spotifyUri: 'spotify:track:483U8EAfsAfp9J2r5et2rr',
-        spotifyUrl: 'https://open.spotify.com/track/483U8EAfsAfp9J2r5et2rr',
-        spotifyEmbedUrl:
-          'https://open.spotify.com/embed/track/483U8EAfsAfp9J2r5et2rr?utm_source=generator',
-        accent: '#E9DDF8',
       },
       {
         id: 'ooo-jaane-jana',
@@ -123,18 +87,33 @@ export const birthdayConfig = {
         title: 'Zulfein',
         artist: 'Mehul Mahesh, Dj AYnik',
         movie: 'Zulfein - Single',
-        note: 'Dreamy late-night melody to round out your birthday soundtrack 💖',
-        src: 'https://p.scdn.co/mp3-preview/3d455037b45d03dbd2f8d3a560cb26642c41637e',
-        fallbackSrc:
-          'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/47/3a/ea/473aeaa7-55cf-c203-2c7e-530b13b53b00/mzaf_8871076281904310201.plus.aac.p.m4a',
+        note: 'Dreamy late-night melody from the start to round out your birthday soundtrack 💖',
+        duration: 275,
         coverArt:
           'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0224cf458ef905402e43dacb7e',
-        spotifyId: '6GK02ZOmn7hzEOWVc4YfwC',
-        spotifyUri: 'spotify:track:6GK02ZOmn7hzEOWVc4YfwC',
-        spotifyUrl: 'https://open.spotify.com/track/6GK02ZOmn7hzEOWVc4YfwC',
+        youtubeId: '3YR2O6Ki1IE',
+        youtubeUrl: 'https://www.youtube.com/watch?v=3YR2O6Ki1IE',
+        youtubeEmbedUrl:
+          'https://www.youtube.com/embed/3YR2O6Ki1IE?enablejsapi=1&rel=0',
+        accent: '#E9DDF8',
+      },
+      {
+        id: 'hosanna',
+        title: 'Hosanna',
+        artist: "A.R. Rahman, Leon D'souza, Suzanne D'Mello",
+        movie: 'Ekk Deewana Tha',
+        note: 'Breezy A.R. Rahman magic to make your birthday extra special ✨',
+        src: 'https://p.scdn.co/mp3-preview/4d2ba1dcfc03099f47d2759c86704a7bee01580d',
+        fallbackSrc:
+          'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/98/de/9d/98de9d6f-f3cd-c41b-ce98-f2f4e81d24e6/mzaf_10096028485880292309.plus.aac.p.m4a',
+        coverArt:
+          'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e025e231170542621d8db3fc7fb',
+        spotifyId: '6mllfbzRtzdyQ5Kqbt4Mvz',
+        spotifyUri: 'spotify:track:6mllfbzRtzdyQ5Kqbt4Mvz',
+        spotifyUrl: 'https://open.spotify.com/track/6mllfbzRtzdyQ5Kqbt4Mvz',
         spotifyEmbedUrl:
-          'https://open.spotify.com/embed/track/6GK02ZOmn7hzEOWVc4YfwC?utm_source=generator',
-        accent: '#EFA9C2',
+          'https://open.spotify.com/embed/track/6mllfbzRtzdyQ5Kqbt4Mvz?utm_source=generator',
+        accent: '#F8C8DC',
       },
     ],
   },
