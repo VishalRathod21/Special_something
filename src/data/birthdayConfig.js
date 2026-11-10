@@ -87,14 +87,16 @@ export const birthdayConfig = {
         title: 'Zulfein',
         artist: 'Mehul Mahesh, Dj AYnik',
         movie: 'Zulfein - Single',
-        note: 'Dreamy late-night melody from the start to round out your birthday soundtrack 💖',
-        duration: 275,
+        note: '15-second sweet highlight starting from the beginning 💖',
+        startSeconds: 0,
+        maxDuration: 15,
+        duration: 15,
         coverArt:
           'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0224cf458ef905402e43dacb7e',
         youtubeId: '3YR2O6Ki1IE',
         youtubeUrl: 'https://www.youtube.com/watch?v=3YR2O6Ki1IE',
         youtubeEmbedUrl:
-          'https://www.youtube.com/embed/3YR2O6Ki1IE?enablejsapi=1&rel=0',
+          'https://www.youtube.com/embed/3YR2O6Ki1IE?enablejsapi=1&rel=0&start=0&end=15',
         accent: '#E9DDF8',
       },
       {
@@ -102,17 +104,15 @@ export const birthdayConfig = {
         title: 'Hosanna',
         artist: "A.R. Rahman, Leon D'souza, Suzanne D'Mello",
         movie: 'Ekk Deewana Tha',
-        note: 'Breezy A.R. Rahman magic to make your birthday extra special ✨',
-        src: 'https://p.scdn.co/mp3-preview/4d2ba1dcfc03099f47d2759c86704a7bee01580d',
-        fallbackSrc:
-          'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/98/de/9d/98de9d6f-f3cd-c41b-ce98-f2f4e81d24e6/mzaf_10096028485880292309.plus.aac.p.m4a',
+        note: 'Starting from "Udti hui titli..." — A.R. Rahman magic for your birthday ✨',
+        startSeconds: 197,
+        duration: 137,
         coverArt:
           'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e025e231170542621d8db3fc7fb',
-        spotifyId: '6mllfbzRtzdyQ5Kqbt4Mvz',
-        spotifyUri: 'spotify:track:6mllfbzRtzdyQ5Kqbt4Mvz',
-        spotifyUrl: 'https://open.spotify.com/track/6mllfbzRtzdyQ5Kqbt4Mvz',
-        spotifyEmbedUrl:
-          'https://open.spotify.com/embed/track/6mllfbzRtzdyQ5Kqbt4Mvz?utm_source=generator',
+        youtubeId: 'b8vDgqGNwKw',
+        youtubeUrl: 'https://www.youtube.com/watch?v=b8vDgqGNwKw&t=197s',
+        youtubeEmbedUrl:
+          'https://www.youtube.com/embed/b8vDgqGNwKw?enablejsapi=1&rel=0&start=197',
         accent: '#F8C8DC',
       },
     ],

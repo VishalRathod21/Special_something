@@ -288,6 +288,14 @@ export default function MusicPlayer({ audio, onNext }) {
           playerVars: {
             rel: 0,
             playsinline: 1,
+            ...(ytTrack.startSeconds ? { start: Math.floor(ytTrack.startSeconds) } : {}),
+            ...(ytTrack.maxDuration
+              ? {
+                  end: Math.floor(
+                    (ytTrack.startSeconds || 0) + ytTrack.maxDuration
+                  ),
+                }
+              : {}),
           },
           events: {
             onReady: (event) => {
@@ -400,7 +408,8 @@ export default function MusicPlayer({ audio, onNext }) {
       return;
     }
     if (isYoutubeEmbedPlaying && youtubeControllerRef.current) {
-      youtubeControllerRef.current.seekTo?.(nextSeconds, true);
+      const startOffset = currentTrack?.startSeconds || 0;
+      youtubeControllerRef.current.seekTo?.(startOffset + nextSeconds, true);
       return;
     }
     seek(nextSeconds);

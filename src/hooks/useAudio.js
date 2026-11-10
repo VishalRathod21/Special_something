@@ -61,6 +61,30 @@ export function loadYouTubeIframeApi(timeoutMs = 7000) {
 }
 
 /**
+ * Computes effective segment start offset, visible duration, and optional
+ * hard-stop time for YouTube-backed tracks (supports custom verse starts and
+ * fixed-length highlights such as 15-second clips).
+ */
+function getYtSegmentBounds(track, ytTotalDuration = 0) {
+  const start =
+    Number.isFinite(track?.startSeconds) && track.startSeconds > 0
+      ? track.startSeconds
+      : 0;
+  const capped =
+    Number.isFinite(track?.maxDuration) && track.maxDuration > 0
+      ? track.maxDuration
+      : null;
+
+  if (capped) {
+    return { start, displayDuration: capped, hardEnd: start + capped };
+  }
+  if (Number.isFinite(ytTotalDuration) && ytTotalDuration > start) {
+    return { start, displayDuration: ytTotalDuration - start, hardEnd: null };
+  }
+  return { start, displayDuration: track?.duration || 0, hardEnd: null };
+}
+
+/**
  * Shared HTML5 Audio + persistent YouTube IFrame Audio + subtle Web Audio UI chime hook.
  * Instantiated once at the root BirthdayExperience level so playback persists
  * seamlessly across all 10 screens without duplicate audio elements or restarts.
@@ -81,6 +105,7 @@ export function useAudio() {
   const ytReadyRef = useRef(false);
   const ytLoadedVideoIdRef = useRef('');
   const ytPendingPlayRef = useRef(false);
+  const ytEndTriggeredRef = useRef(false);
   const volumeRef = useRef(0.75);
   const isMutedRef = useRef(false);
 
@@ -144,6 +169,12 @@ export function useAudio() {
       }
 
       isPlayingIntentRef.current = true;
+      ytEndTriggeredRef.current = false;
+      const bounds = getYtSegmentBounds(activeTrack);
+      if (bounds.displayDuration > 0) {
+        setDuration(bounds.displayDuration);
+      }
+
       const player = ytPlayerRef.current;
       if (player && ytReadyRef.current) {
         try {
@@ -153,8 +184,19 @@ export function useAudio() {
 
           if (ytLoadedVideoIdRef.current !== activeTrack.youtubeId) {
             ytLoadedVideoIdRef.current = activeTrack.youtubeId;
-            player.loadVideoById(activeTrack.youtubeId);
+            player.loadVideoById({
+              videoId: activeTrack.youtubeId,
+              startSeconds: bounds.start,
+            });
           } else {
+            const cur = player.getCurrentTime?.() || 0;
+            if (
+              cur < bounds.start - 0.5 ||
+              (bounds.hardEnd && cur >= bounds.hardEnd - 0.2)
+            ) {
+              player.seekTo?.(bounds.start, true);
+              setCurrentTime(0);
+            }
             player.playVideo();
           }
           setAudioError(null);
@@ -243,6 +285,7 @@ export function useAudio() {
       }
 
       usedFallbackRef.current = false;
+      ytEndTriggeredRef.current = false;
       currentTrackIndexRef.current = safeIdx;
       setCurrentTrackIndex(safeIdx);
       isPlayingIntentRef.current = autoStart;
@@ -266,7 +309,10 @@ export function useAudio() {
             ytLoadedVideoIdRef.current !== targetTrack.youtubeId
           ) {
             ytLoadedVideoIdRef.current = targetTrack.youtubeId;
-            ytPlayerRef.current.cueVideoById(targetTrack.youtubeId);
+            ytPlayerRef.current.cueVideoById({
+              videoId: targetTrack.youtubeId,
+              startSeconds: getYtSegmentBounds(targetTrack).start,
+            });
           }
           setIsPlaying(false);
         }
@@ -416,6 +462,7 @@ export function useAudio() {
             controls: 0,
             playsinline: 1,
             rel: 0,
+            start: getYtSegmentBounds(initialYtTrack).start,
           },
           events: {
             onReady: (event) => {
@@ -438,10 +485,18 @@ export function useAudio() {
               const activeTrack = tracks[currentTrackIndexRef.current];
               if (ytPendingPlayRef.current && activeTrack?.youtubeId) {
                 ytPendingPlayRef.current = false;
+                const { start } = getYtSegmentBounds(activeTrack);
                 if (ytLoadedVideoIdRef.current !== activeTrack.youtubeId) {
                   ytLoadedVideoIdRef.current = activeTrack.youtubeId;
-                  event.target.loadVideoById(activeTrack.youtubeId);
+                  event.target.loadVideoById({
+                    videoId: activeTrack.youtubeId,
+                    startSeconds: start,
+                  });
                 } else {
+                  const cur = event.target.getCurrentTime?.() || 0;
+                  if (start > 0 && cur < start - 0.5) {
+                    event.target.seekTo?.(start, true);
+                  }
                   event.target.playVideo();
                 }
               }
@@ -450,17 +505,26 @@ export function useAudio() {
               if (cancelled) return;
               const activeTrack = tracks[currentTrackIndexRef.current];
               if (!activeTrack?.youtubeId) return;
+              const loadedVid = event.target.getVideoData?.()?.video_id;
+              if (loadedVid && loadedVid !== activeTrack.youtubeId) return;
 
               if (event.data === YT.PlayerState.PLAYING) {
                 setAudioError(null);
                 setIsPlaying(true);
                 const dur = event.target.getDuration?.();
-                if (Number.isFinite(dur) && dur > 0) {
-                  setDuration(dur);
+                const bounds = getYtSegmentBounds(activeTrack, dur);
+                if (bounds.displayDuration > 0) {
+                  setDuration(bounds.displayDuration);
+                }
+                const cur = event.target.getCurrentTime?.();
+                if (Number.isFinite(cur) && bounds.start > 0 && cur < bounds.start - 1) {
+                  event.target.seekTo?.(bounds.start, true);
                 }
               } else if (event.data === YT.PlayerState.PAUSED) {
                 setIsPlaying(false);
               } else if (event.data === YT.PlayerState.ENDED) {
+                if (ytEndTriggeredRef.current) return;
+                ytEndTriggeredRef.current = true;
                 const nextIdx = (currentTrackIndexRef.current + 1) % tracks.length;
                 selectTrackRef.current?.(nextIdx, true);
               }
@@ -503,17 +567,37 @@ export function useAudio() {
       const player = ytPlayerRef.current;
       if (!player || !ytReadyRef.current) return;
       try {
+        const loadedVid = player.getVideoData?.()?.video_id;
+        if (loadedVid && loadedVid !== currentTrack.youtubeId) return;
+
         const cur = player.getCurrentTime?.();
         const dur = player.getDuration?.();
-        if (Number.isFinite(cur)) setCurrentTime(cur);
-        if (Number.isFinite(dur) && dur > 0) setDuration(dur);
+        const bounds = getYtSegmentBounds(currentTrack, dur);
+        if (bounds.displayDuration > 0) {
+          setDuration(bounds.displayDuration);
+        }
+        if (Number.isFinite(cur)) {
+          if (bounds.hardEnd && cur >= bounds.hardEnd && !ytEndTriggeredRef.current) {
+            ytEndTriggeredRef.current = true;
+            setCurrentTime(bounds.displayDuration);
+            const nextIdx = (currentTrackIndexRef.current + 1) % tracks.length;
+            selectTrackRef.current?.(nextIdx, true);
+            return;
+          }
+          const relativeCur = Math.max(0, cur - bounds.start);
+          setCurrentTime(
+            bounds.displayDuration > 0
+              ? Math.min(relativeCur, bounds.displayDuration)
+              : relativeCur
+          );
+        }
       } catch {
         // Ignore transient player polling errors
       }
     }, 250);
 
     return () => window.clearInterval(timer);
-  }, [isPlaying, currentTrack]);
+  }, [isPlaying, currentTrack, tracks.length]);
 
   // Sync volume & mute state cleanly across HTML5 audio and YouTube player
   useEffect(() => {
@@ -588,8 +672,16 @@ export function useAudio() {
         const player = ytPlayerRef.current;
         if (player && ytReadyRef.current) {
           try {
-            player.seekTo?.(clamped, true);
-            setCurrentTime(clamped);
+            const bounds = getYtSegmentBounds(
+              activeTrack,
+              duration + (activeTrack.startSeconds || 0)
+            );
+            const clampedRel = Math.max(
+              0,
+              Math.min(seconds, bounds.displayDuration || duration || seconds)
+            );
+            player.seekTo?.(bounds.start + clampedRel, true);
+            setCurrentTime(clampedRel);
           } catch {
             // Ignore YT seek error
           }
