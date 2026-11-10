@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8F3"/>
+      <stop offset="100%" stop-color="#E9DDF8"/>
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="2" fill="#FFFFFF" opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#dots)"/>
+  
+            <rect x="95" y="75" width="210" height="150" rx="22" fill="#FFFFFF" stroke="#F8C8DC" stroke-width="4"/>
+            <circle cx="200" cy="136" r="36" fill="#E6B89C"/>
+            <circle cx="174" cy="108" r="14" fill="#E6B89C"/>
+            <circle cx="226" cy="108" r="14" fill="#E6B89C"/>
+            <circle cx="174" cy="108" r="8" fill="#F8C8DC"/>
+            <circle cx="226" cy="108" r="8" fill="#F8C8DC"/>
+            <ellipse cx="200" cy="144" rx="15" ry="11" fill="#FFF8F3"/>
+            <circle cx="188" cy="132" r="3.5" fill="#513B48"/>
+            <circle cx="212" cy="132" r="3.5" fill="#513B48"/>
+            <circle cx="200" cy="140" r="3" fill="#513B48"/>
+            <path d="M185 170 C185 162 174 162 174 170 C174 178 192 188 192 188 C192 188 210 178 210 170 C210 162 199 162 199 170 Z" fill="#C96B91"/>
+            <path d="M118 98 L122 108 L132 112 L122 116 L118 126 L114 116 L104 112 L114 108 Z" fill="#EFA9C2"/>
+            <path d="M278 100 L282 110 L292 114 L282 118 L278 128 L274 118 L264 114 L274 110 Z" fill="#E9DDF8"/>
+            
+  <rect x="115" y="254" width="170" height="28" rx="14" fill="#FFFFFF" opacity="0.82"/>
+  <text x="200" y="272" text-anchor="middle" font-family="sans-serif" font-size="11.5" font-weight="600" fill="#513B48">Little Keepsake Polaroid</text>
+</svg>

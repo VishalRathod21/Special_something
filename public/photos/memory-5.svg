@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8C8DC"/>
+      <stop offset="100%" stop-color="#FFF8F3"/>
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="2" fill="#FFFFFF" opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#dots)"/>
+  
+            <path d="M40 220 Q135 170 220 135 Q290 108 360 115" fill="none" stroke="#9C7A6B" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="150" cy="155" r="20" fill="#FFF8F3"/>
+            <circle cx="136" cy="145" r="12" fill="#FCE4EC"/>
+            <circle cx="164" cy="145" r="12" fill="#FCE4EC"/>
+            <circle cx="150" cy="135" r="12" fill="#FFFFFF"/>
+            <circle cx="150" cy="150" r="6" fill="#EFA9C2"/>
+            <circle cx="245" cy="120" r="22" fill="#FFFFFF"/>
+            <circle cx="230" cy="108" r="13" fill="#FCE4EC"/>
+            <circle cx="260" cy="108" r="13" fill="#FCE4EC"/>
+            <circle cx="245" cy="116" r="7" fill="#C96B91"/>
+            <circle cx="310" cy="132" r="16" fill="#FFF8F3"/>
+            <circle cx="310" cy="132" r="5" fill="#EFA9C2"/>
+            <ellipse cx="110" cy="215" rx="8" ry="5" transform="rotate(-25 110 215)" fill="#FFF8F3"/>
+            <ellipse cx="215" cy="205" rx="8" ry="5" transform="rotate(20 215 205)" fill="#FCE4EC"/>
+            <ellipse cx="290" cy="225" rx="7" ry="4" transform="rotate(-15 290 225)" fill="#FFFFFF"/>
+            
+  <rect x="115" y="254" width="170" height="28" rx="14" fill="#FFFFFF" opacity="0.82"/>
+  <text x="200" y="272" text-anchor="middle" font-family="sans-serif" font-size="11.5" font-weight="600" fill="#513B48">Cherry Blossom Breeze</text>
+</svg>

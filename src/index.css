@@ -1,0 +1,265 @@
+@import "tailwindcss";
+@import "./styles/animations.css";
+
+@theme {
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-hand: "Caveat", cursive;
+
+  --color-pink-primary: #F8C8DC;
+  --color-pink-baby: #FCE4EC;
+  --color-cream-soft: #FFF8F3;
+  --color-pink-rose: #EFA9C2;
+  --color-lavender-soft: #E9DDF8;
+  --color-pink-deep: #C96B91;
+  --color-pink-accessible: #9E3C65;
+  --color-ink: #513B48;
+  --color-ink-muted: #6F5564;
+}
+
+:root {
+  color-scheme: light;
+  --bg-cream: #FFF8F3;
+  --bg-baby-pink: #FCE4EC;
+  --bg-primary-pink: #F8C8DC;
+  --bg-rose: #EFA9C2;
+  --bg-lavender: #E9DDF8;
+  --accent-deep: #C96B91;
+  --accent-accessible: #9E3C65;
+  --text-main: #513B48;
+  --in-oklab: ;
+  --in-oklch: ;
+}
+
+@supports (linear-gradient(in oklab, white, black)) {
+  :root {
+    --in-oklab: in oklab;
+    --in-oklch: in oklch;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  background-color: var(--bg-cream);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-block-size: 100dvh;
+  line-height: 1.55;
+  color: var(--text-main);
+  background-color: var(--bg-cream);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(248, 200, 220, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 88% 15%, rgba(233, 221, 248, 0.5) 0%, transparent 42%),
+    radial-gradient(circle at 50% 88%, rgba(252, 228, 236, 0.55) 0%, transparent 50%);
+  overflow-x: hidden;
+}
+
+/* Typography ergonomics */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.font-hand {
+  font-family: var(--font-hand);
+}
+
+/* Accessible high-contrast focus ring */
+:where(a:any-link, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent-accessible);
+  outline-offset: 3px;
+}
+
+/* Visually hidden utility (accessible to screen readers) */
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Scrapbook paper & tactile texture patterns */
+.paper-card {
+  background-color: #FFFFFF;
+  background-image:
+    radial-gradient(rgba(201, 107, 145, 0.045) 1px, transparent 0),
+    linear-gradient(to bottom var(--in-oklab), rgba(255, 255, 255, 0.96), rgba(255, 248, 243, 0.96));
+  background-size: 18px 18px, 100% 100%;
+  box-shadow:
+    0 12px 30px -10px rgba(81, 59, 72, 0.14),
+    0 3px 10px -2px rgba(201, 107, 145, 0.14),
+    inset 0 0 0 1.5px rgba(248, 200, 220, 0.85);
+}
+
+.scrapbook-paper {
+  background-color: #FFF8F3;
+  background-image:
+    linear-gradient(rgba(239, 169, 194, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 169, 194, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.polka-pastel {
+  --distance: 1.5em;
+  --radius: 0.2em;
+  --polka: radial-gradient(circle, rgba(255, 255, 255, 0.65) var(--radius), transparent calc(var(--radius) + 1px));
+  background-color: #FCE4EC;
+  background-image: var(--polka), var(--polka);
+  background-position: 0 0, var(--distance) var(--distance);
+  background-size: calc(var(--distance) * 2) calc(var(--distance) * 2);
+}
+
+.lace-border {
+  position: relative;
+}
+
+.lace-border::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 2px dashed rgba(201, 107, 145, 0.35);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Native <dialog> modal scroll containment & styling */
+dialog:modal {
+  overscroll-behavior: contain;
+  margin: auto;
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-inline-size: min(94vw, 56rem);
+  max-block-size: 92dvh;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(81, 59, 72, 0.56);
+  backdrop-filter: blur(6px);
+}
+
+/* Brand-Consistent Native Range Slider (Audio progress & volume) */
+input[type="range"].pastel-slider {
+  --slider-track-size: 0.5rem;
+  --slider-thumb-size: 1.15rem;
+  --slider-track-radius: 999px;
+  --slider-thumb-radius: 50%;
+  --slider-track-color: #FCE4EC;
+  --slider-fill-color: #9E3C65;
+  --slider-thumb-color: #9E3C65;
+  --slider-direction: to right;
+  --attr-min: 0;
+  --attr-max: 100;
+  --control-value: 0;
+  --slider-progress: calc(
+    (var(--control-value) - var(--attr-min)) /
+    max(1, (var(--attr-max) - var(--attr-min))) * 100%
+  );
+
+  appearance: none;
+  inline-size: 100%;
+  block-size: 2.25rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"].pastel-slider::-webkit-slider-runnable-track {
+  block-size: var(--slider-track-size);
+  border: 1px solid rgba(201, 107, 145, 0.35);
+  border-radius: var(--slider-track-radius);
+  background: linear-gradient(
+    var(--slider-direction),
+    var(--slider-fill-color) var(--slider-progress),
+    var(--slider-track-color) var(--slider-progress)
+  );
+}
+
+input[type="range"].pastel-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: var(--slider-thumb-size);
+  block-size: var(--slider-thumb-size);
+  margin-block-start: calc(
+    (var(--slider-track-size) - var(--slider-thumb-size)) / 2 - 1px
+  );
+  border: 2.5px solid #FFFFFF;
+  border-radius: var(--slider-thumb-radius);
+  background: var(--slider-thumb-color);
+  box-shadow: 0 2px 6px rgba(81, 59, 72, 0.25);
+}
+
+input[type="range"].pastel-slider::-moz-range-track {
+  block-size: var(--slider-track-size);
+  border: 1px solid rgba(201, 107, 145, 0.35);
+  border-radius: var(--slider-track-radius);
+  background: var(--slider-track-color);
+}
+
+input[type="range"].pastel-slider::-moz-range-progress {
+  block-size: var(--slider-track-size);
+  border-radius: var(--slider-track-radius);
+  background: var(--slider-fill-color);
+}
+
+input[type="range"].pastel-slider::-moz-range-thumb {
+  inline-size: var(--slider-thumb-size);
+  block-size: var(--slider-thumb-size);
+  border: 2.5px solid #FFFFFF;
+  border-radius: var(--slider-thumb-radius);
+  background: var(--slider-thumb-color);
+  box-shadow: 0 2px 6px rgba(81, 59, 72, 0.25);
+}
+
+input[type="range"].pastel-slider:focus-visible {
+  outline: 3px solid var(--accent-accessible);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* Windows Forced Colors (High Contrast Mode) support */
+@media (forced-colors: active) {
+  .paper-card,
+  .scrapbook-paper,
+  .polka-pastel {
+    border: 2px solid CanvasText;
+    background-image: none;
+  }
+
+  .lace-border::after {
+    border-color: CanvasText;
+  }
+
+  button,
+  a {
+    border: 1px solid ButtonText;
+  }
+}
+

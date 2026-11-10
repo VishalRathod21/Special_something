@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8F3"/>
+      <stop offset="100%" stop-color="#F8C8DC"/>
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="2" fill="#FFFFFF" opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#dots)"/>
+  
+            <rect x="135" y="185" width="130" height="70" rx="16" fill="#F8C8DC" stroke="#C96B91" stroke-width="3"/>
+            <path d="M125 185 Q150 130 200 130 Q250 130 275 185 Z" fill="#FFF8F3" stroke="#EFA9C2" stroke-width="3"/>
+            <circle cx="200" cy="122" r="16" fill="#C96B91"/>
+            <circle cx="195" cy="117" r="4" fill="#FFFFFF" opacity="0.7"/>
+            <circle cx="170" cy="160" r="6" fill="#EFA9C2"/>
+            <circle cx="228" cy="158" r="6" fill="#E9DDF8"/>
+            <circle cx="200" cy="168" r="6" fill="#F8C8DC"/>
+            <line x1="165" y1="196" x2="165" y2="244" stroke="#EFA9C2" stroke-width="3" stroke-linecap="round"/>
+            <line x1="200" y1="196" x2="200" y2="244" stroke="#EFA9C2" stroke-width="3" stroke-linecap="round"/>
+            <line x1="235" y1="196" x2="235" y2="244" stroke="#EFA9C2" stroke-width="3" stroke-linecap="round"/>
+            <path d="M85 110 C85 98 70 98 70 110 C70 122 92 135 92 135 C92 135 114 122 114 110 C114 98 99 98 99 110 Z" fill="#EFA9C2"/>
+            <path d="M300 95 L305 108 L318 113 L305 118 L300 131 L295 118 L282 113 L295 108 Z" fill="#C96B91" opacity="0.6"/>
+            
+  <rect x="115" y="254" width="170" height="28" rx="14" fill="#FFFFFF" opacity="0.82"/>
+  <text x="200" y="272" text-anchor="middle" font-family="sans-serif" font-size="11.5" font-weight="600" fill="#513B48">Cozy Cupcake Afternoon</text>
+</svg>

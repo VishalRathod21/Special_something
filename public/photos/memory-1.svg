@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE4EC"/>
+      <stop offset="100%" stop-color="#F8C8DC"/>
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="2" fill="#FFFFFF" opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#dots)"/>
+  
+            <ellipse cx="200" cy="240" rx="150" ry="38" fill="#FFF8F3" stroke="#EFA9C2" stroke-width="3"/>
+            <path d="M90 225 Q200 185 310 225 L295 255 Q200 230 105 255 Z" fill="#F8C8DC" opacity="0.7"/>
+            <circle cx="155" cy="180" r="34" fill="#E6B89C"/>
+            <circle cx="130" cy="153" r="13" fill="#E6B89C"/>
+            <circle cx="180" cy="153" r="13" fill="#E6B89C"/>
+            <circle cx="130" cy="153" r="7" fill="#F8C8DC"/>
+            <circle cx="180" cy="153" r="7" fill="#F8C8DC"/>
+            <ellipse cx="155" cy="188" rx="14" ry="10" fill="#FFF8F3"/>
+            <circle cx="144" cy="176" r="3.5" fill="#513B48"/>
+            <circle cx="166" cy="176" r="3.5" fill="#513B48"/>
+            <circle cx="155" cy="184" r="3" fill="#513B48"/>
+            <circle cx="138" cy="185" r="5" fill="#EFA9C2" opacity="0.7"/>
+            <circle cx="172" cy="185" r="5" fill="#EFA9C2" opacity="0.7"/>
+            <path d="M235 200 C225 180 255 180 245 200 Z" fill="#E87A9A"/>
+            <circle cx="240" cy="196" r="16" fill="#E87A9A"/>
+            <path d="M232 181 Q240 173 248 181" stroke="#6B9E78" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="235" cy="194" r="1.5" fill="#FFF8F3"/>
+            <circle cx="244" cy="200" r="1.5" fill="#FFF8F3"/>
+            <circle cx="240" cy="191" r="1.5" fill="#FFF8F3"/>
+            <path d="M90 75 L95 88 L108 93 L95 98 L90 111 L85 98 L72 93 L85 88 Z" fill="#FFFFFF" opacity="0.9"/>
+            <path d="M300 65 L304 75 L314 79 L304 83 L300 93 L296 83 L286 79 L296 75 Z" fill="#FFF8F3"/>
+            
+  <rect x="115" y="254" width="170" height="28" rx="14" fill="#FFFFFF" opacity="0.82"/>
+  <text x="200" y="272" text-anchor="middle" font-family="sans-serif" font-size="11.5" font-weight="600" fill="#513B48">Strawberry Picnic Day</text>
+</svg>

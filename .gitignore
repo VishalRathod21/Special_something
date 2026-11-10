@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Production build output (rebuilt by Vercel / Vite)
+dist/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS / Editor files
+.DS_Store
+Thumbs.db

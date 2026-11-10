@@ -1,0 +1,26 @@
+{
+  "name": "vanshika-birthday-universe",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vanshika's Little Birthday Universe - A Little World Made Just For You.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4",
+    "framer-motion": "^14.11.1",
+    "lottie-react": "^3.1.2",
+    "lucide-react": "^1.71.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-react": "^6.3.0",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.7"
+  }
+}
