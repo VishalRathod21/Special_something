@@ -10,13 +10,14 @@ import {
   Music,
   Pause,
   Play,
+  PlayCircle,
   SkipBack,
   SkipForward,
   Volume2,
   VolumeX,
 } from 'lucide-react';
 import { birthdayConfig } from '../data/birthdayConfig';
-import { formatAudioTime } from '../hooks/useAudio';
+import { formatAudioTime, loadYouTubeIframeApi } from '../hooks/useAudio';
 import TeddyIllustration from './TeddyIllustration';
 import { RibbonBow } from './ScrapbookAccents';
 
@@ -79,6 +80,7 @@ export default function MusicPlayer({ audio, onNext }) {
     currentTrackIndex,
     isPlaying,
     isSpotifyPlaying,
+    isYoutubeEmbedPlaying,
     isMuted,
     volume,
     currentTime,
@@ -93,12 +95,15 @@ export default function MusicPlayer({ audio, onNext }) {
     setVolumeLevel,
     toggleMute,
     registerSpotifyPause,
+    registerYoutubeEmbedPause,
     handleSpotifyPlaybackState,
+    handleYoutubeEmbedPlaybackState,
   } = audio;
 
   const [loadedCovers, setLoadedCovers] = useState({});
   const [failedCovers, setFailedCovers] = useState({});
   const [spotifyState, setSpotifyState] = useState('loading'); // 'loading' | 'ready' | 'fallback'
+  const [youtubeState, setYoutubeState] = useState('loading'); // 'loading' | 'ready' | 'fallback'
   const [spotifyProgress, setSpotifyProgress] = useState({
     currentTime: 0,
     duration: 0,
@@ -107,10 +112,17 @@ export default function MusicPlayer({ audio, onNext }) {
   const spotifyHostRef = useRef(null);
   const spotifyControllerRef = useRef(null);
   const loadedSpotifyUriRef = useRef('');
+
+  const youtubeHostRef = useRef(null);
+  const youtubeControllerRef = useRef(null);
+
   const latestTrackRef = useRef(currentTrack);
   latestTrackRef.current = currentTrack;
 
-  const anyPlaying = isPlaying || isSpotifyPlaying;
+  const hasSpotify = Boolean(currentTrack?.spotifyUri);
+  const hasYoutube = Boolean(currentTrack?.youtubeId);
+
+  const anyPlaying = isPlaying || isSpotifyPlaying || isYoutubeEmbedPlaying;
   const displayTime =
     isSpotifyPlaying && spotifyProgress.duration > 0
       ? spotifyProgress.currentTime
@@ -120,12 +132,14 @@ export default function MusicPlayer({ audio, onNext }) {
       ? spotifyProgress.duration
       : duration;
 
-  const safeMax = displayDuration > 0 ? displayDuration : 30;
+  const safeMax =
+    displayDuration > 0 ? displayDuration : currentTrack?.duration || 30;
   const safeVal =
     displayDuration > 0 ? Math.min(displayTime, displayDuration) : 0;
 
-  // Mount Official Spotify IFrame API controller cleanly inside an unmanaged host element
+  // Mount Official Spotify IFrame API controller whenever a Spotify-backed track is active
   useEffect(() => {
+    if (!hasSpotify) return undefined;
     let active = true;
     const host = spotifyHostRef.current;
     const initialTrack = latestTrackRef.current;
@@ -232,9 +246,9 @@ export default function MusicPlayer({ audio, onNext }) {
         host.innerHTML = '';
       }
     };
-  }, [registerSpotifyPause, handleSpotifyPlaybackState]);
+  }, [hasSpotify, registerSpotifyPause, handleSpotifyPlaybackState]);
 
-  // Sync Spotify Embed track when user switches between the 3 Bollywood songs
+  // Sync Spotify Embed track when switching between Spotify-backed songs
   useEffect(() => {
     const uri = currentTrack?.spotifyUri;
     const controller = spotifyControllerRef.current;
@@ -248,6 +262,92 @@ export default function MusicPlayer({ audio, onNext }) {
     }
     controller.loadUri(uri);
   }, [currentTrack, handleSpotifyPlaybackState]);
+
+  // Mount Official YouTube Embed controller when a YouTube-backed track is active
+  useEffect(() => {
+    if (!hasYoutube) return undefined;
+    let active = true;
+    const host = youtubeHostRef.current;
+    const ytTrack = latestTrackRef.current;
+    if (!host || !ytTrack?.youtubeId) return undefined;
+
+    setYoutubeState('loading');
+
+    loadYouTubeIframeApi()
+      .then((YT) => {
+        if (!active || !youtubeHostRef.current) return;
+
+        youtubeHostRef.current.innerHTML = '';
+        const mountTarget = document.createElement('div');
+        youtubeHostRef.current.appendChild(mountTarget);
+
+        const player = new YT.Player(mountTarget, {
+          width: '100%',
+          height: '180',
+          videoId: ytTrack.youtubeId,
+          playerVars: {
+            rel: 0,
+            playsinline: 1,
+          },
+          events: {
+            onReady: (event) => {
+              if (!active) return;
+              youtubeControllerRef.current = event.target;
+              const iframe = event.target.getIframe?.();
+              if (iframe) {
+                iframe.title = `Official YouTube player for ${ytTrack.title}`;
+                iframe.style.borderRadius = '14px';
+                iframe.style.width = '100%';
+              }
+              registerYoutubeEmbedPause(() => {
+                event.target.pauseVideo?.();
+              });
+              setYoutubeState('ready');
+            },
+            onStateChange: (event) => {
+              if (!active) return;
+              if (event.data === YT.PlayerState.PLAYING) {
+                setYoutubeState('ready');
+                handleYoutubeEmbedPlaybackState(true);
+              } else if (
+                event.data === YT.PlayerState.PAUSED ||
+                event.data === YT.PlayerState.ENDED
+              ) {
+                handleYoutubeEmbedPlaybackState(false);
+              }
+            },
+            onError: () => {
+              if (!active) return;
+              handleYoutubeEmbedPlaybackState(false);
+              setYoutubeState('fallback');
+            },
+          },
+        });
+
+        youtubeControllerRef.current = player;
+      })
+      .catch(() => {
+        if (!active) return;
+        setYoutubeState('fallback');
+      });
+
+    return () => {
+      active = false;
+      registerYoutubeEmbedPause(null);
+      handleYoutubeEmbedPlaybackState(false);
+      if (youtubeControllerRef.current) {
+        try {
+          youtubeControllerRef.current.destroy?.();
+        } catch {
+          // Ignore teardown errors
+        }
+        youtubeControllerRef.current = null;
+      }
+      if (host) {
+        host.innerHTML = '';
+      }
+    };
+  }, [hasYoutube, currentTrack?.youtubeId, registerYoutubeEmbedPause, handleYoutubeEmbedPlaybackState]);
 
   const markCoverLoaded = (trackId) => {
     setLoadedCovers((prev) => ({ ...prev, [trackId]: true }));
@@ -263,6 +363,11 @@ export default function MusicPlayer({ audio, onNext }) {
       handleSpotifyPlaybackState(false);
       return;
     }
+    if (isYoutubeEmbedPlaying && youtubeControllerRef.current) {
+      youtubeControllerRef.current.pauseVideo?.();
+      handleYoutubeEmbedPlaybackState(false);
+      return;
+    }
     await togglePlay();
   };
 
@@ -270,6 +375,15 @@ export default function MusicPlayer({ audio, onNext }) {
     if (idx === currentTrackIndex && isSpotifyPlaying && spotifyControllerRef.current) {
       spotifyControllerRef.current.pause();
       handleSpotifyPlaybackState(false);
+      return;
+    }
+    if (
+      idx === currentTrackIndex &&
+      isYoutubeEmbedPlaying &&
+      youtubeControllerRef.current
+    ) {
+      youtubeControllerRef.current.pauseVideo?.();
+      handleYoutubeEmbedPlaybackState(false);
       return;
     }
     await toggleTrack(idx);
@@ -285,6 +399,10 @@ export default function MusicPlayer({ audio, onNext }) {
       setSpotifyProgress((prev) => ({ ...prev, currentTime: clamped }));
       return;
     }
+    if (isYoutubeEmbedPlaying && youtubeControllerRef.current) {
+      youtubeControllerRef.current.seekTo?.(nextSeconds, true);
+      return;
+    }
     seek(nextSeconds);
   };
 
@@ -292,9 +410,19 @@ export default function MusicPlayer({ audio, onNext }) {
     ? 'Now Playing ✨'
     : isSpotifyPlaying
       ? 'Playing on Spotify 🎧'
-      : currentTime > 0
-        ? 'Paused 🎀'
-        : 'Ready To Play 🎀';
+      : isYoutubeEmbedPlaying
+        ? 'Playing on YouTube 🎵'
+        : currentTime > 0
+          ? 'Paused 🎀'
+          : 'Ready To Play 🎀';
+
+  const sourceLabel = isSpotifyPlaying
+    ? 'Spotify Embed Active'
+    : isYoutubeEmbedPlaying
+      ? 'YouTube Embed Active'
+      : currentTrack?.youtubeId
+        ? 'Official YouTube Track'
+        : 'Official Audio Preview';
 
   return (
     <section
@@ -437,9 +565,7 @@ export default function MusicPlayer({ audio, onNext }) {
                     <span>{statusText}</span>
                   </span>
                   <span className="text-[11px] font-medium text-[#6F5564]">
-                    {isSpotifyPlaying
-                      ? 'Spotify Embed Active'
-                      : 'Official Audio Preview'}
+                    {sourceLabel}
                   </span>
                 </div>
 
@@ -484,7 +610,7 @@ export default function MusicPlayer({ audio, onNext }) {
                   step={0.25}
                   value={safeVal}
                   onChange={(e) => handleProgressSeek(Number(e.target.value))}
-                  aria-valuetext={`${formatAudioTime(displayTime)} of ${formatAudioTime(displayDuration)}`}
+                  aria-valuetext={`${formatAudioTime(displayTime)} of ${formatAudioTime(displayDuration || safeMax)}`}
                   style={{
                     '--attr-min': 0,
                     '--attr-max': safeMax,
@@ -495,9 +621,7 @@ export default function MusicPlayer({ audio, onNext }) {
                 <div className="flex justify-between text-xs font-medium text-[#6F5564] tabular-nums">
                   <span>{formatAudioTime(displayTime)}</span>
                   <span>
-                    {displayDuration > 0
-                      ? formatAudioTime(displayDuration)
-                      : '0:30'}
+                    {formatAudioTime(displayDuration || currentTrack?.duration || 30)}
                   </span>
                 </div>
               </div>
@@ -594,14 +718,14 @@ export default function MusicPlayer({ audio, onNext }) {
               </div>
               {isSpotifyPlaying && (
                 <p className="mt-2 text-right text-[11px] text-[#6F5564]">
-                  Volume slider controls turntable previews; Spotify embed uses
+                  Volume slider controls turntable playback; Spotify embed uses
                   device volume.
                 </p>
               )}
             </div>
           </div>
 
-          {/* 3-Track Playlist Section */}
+          {/* Playlist Section */}
           <div className="mt-6 border-t border-[#F8C8DC] pt-5">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <h2
@@ -624,8 +748,11 @@ export default function MusicPlayer({ audio, onNext }) {
                 const isSelected = idx === currentTrackIndex;
                 const isThisTurntablePlaying = isSelected && isPlaying;
                 const isThisSpotifyPlaying = isSelected && isSpotifyPlaying;
+                const isThisYoutubePlaying = isSelected && isYoutubeEmbedPlaying;
                 const isThisPlaying =
-                  isThisTurntablePlaying || isThisSpotifyPlaying;
+                  isThisTurntablePlaying ||
+                  isThisSpotifyPlaying ||
+                  isThisYoutubePlaying;
 
                 return (
                   <li
@@ -678,7 +805,9 @@ export default function MusicPlayer({ audio, onNext }) {
                               <span>
                                 {isThisSpotifyPlaying
                                   ? 'Playing on Spotify'
-                                  : 'Now Playing'}
+                                  : isThisYoutubePlaying
+                                    ? 'Playing on YouTube'
+                                    : 'Now Playing'}
                               </span>
                             </span>
                           ) : isSelected ? (
@@ -729,93 +858,165 @@ export default function MusicPlayer({ audio, onNext }) {
             </ul>
           </div>
 
-          {/* Official Spotify Embed Section (Full Tracks when logged in) */}
-          <div className="mt-5 rounded-2xl border border-[#EFA9C2] bg-white/95 p-4">
-            <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#FCE4EC] text-[#9E3C65]">
-                  <Headphones className="h-4 w-4" aria-hidden="true" />
-                </span>
-                <div>
+          {/* Official Spotify OR Official YouTube Player Section */}
+          {hasSpotify && (
+            <div className="mt-5 rounded-2xl border border-[#EFA9C2] bg-white/95 p-4">
+              <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#FCE4EC] text-[#9E3C65]">
+                    <Headphones className="h-4 w-4" aria-hidden="true" />
+                  </span>
                   <h2 className="text-sm font-bold text-[#513B48]">
                     Official Spotify Player — {currentTrack?.title}
                   </h2>
                 </div>
+
+                {currentTrack?.spotifyUrl && (
+                  <a
+                    href={currentTrack.spotifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[#EFA9C2] bg-[#FCE4EC]/75 px-3 py-1 text-xs font-semibold text-[#9E3C65] transition-colors hover:bg-[#F8C8DC]"
+                  >
+                    <span>Open in Spotify</span>
+                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                  </a>
+                )}
               </div>
 
-              {currentTrack?.spotifyUrl && (
-                <a
-                  href={currentTrack.spotifyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[#EFA9C2] bg-[#FCE4EC]/75 px-3 py-1 text-xs font-semibold text-[#9E3C65] transition-colors hover:bg-[#F8C8DC]"
-                >
-                  <span>Open in Spotify</span>
-                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                </a>
+              <div className="mb-3 flex items-start gap-2 rounded-xl border border-[#F8C8DC] bg-[#FFF8F3] px-3 py-2 text-xs leading-relaxed text-[#6F5564]">
+                <Info
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[#9E3C65]"
+                  aria-hidden="true"
+                />
+                <div>
+                  <p>
+                    <strong className="text-[#513B48]">
+                      Want the full song?
+                    </strong>{' '}
+                    Log in to Spotify in your browser and press{' '}
+                    <strong className="text-[#513B48]">Play</strong> directly
+                    inside the Spotify player below (guests without login hear a
+                    30-second preview).
+                  </p>
+                  <p className="mt-1">
+                    If Spotify asks you to sign in or won&apos;t play inside the
+                    embed, tap{' '}
+                    <strong className="text-[#513B48]">Open in Spotify</strong>{' '}
+                    above — or use the pink Turntable controls to keep music
+                    playing seamlessly across all birthday pages.
+                  </p>
+                </div>
+              </div>
+
+              {spotifyState !== 'fallback' ? (
+                <div className="relative min-h-[152px] w-full overflow-hidden rounded-xl border border-[#F8C8DC] bg-[#FCE4EC]/45">
+                  {spotifyState === 'loading' && (
+                    <div
+                      role="status"
+                      className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 px-4 text-center"
+                    >
+                      <Headphones
+                        className="h-5 w-5 animate-pulse text-[#9E3C65]"
+                        aria-hidden="true"
+                      />
+                      <p className="text-xs font-semibold text-[#513B48]">
+                        Loading official Spotify player for {currentTrack?.title}…
+                      </p>
+                      <p className="text-[11px] text-[#6F5564]">
+                        Tap Open in Spotify anytime if your browser blocks embeds.
+                      </p>
+                    </div>
+                  )}
+                  <div ref={spotifyHostRef} className="min-h-[152px] w-full" />
+                </div>
+              ) : (
+                currentTrack?.spotifyEmbedUrl && (
+                  <iframe
+                    title={`Official Spotify player for ${currentTrack.title}`}
+                    src={currentTrack.spotifyEmbedUrl}
+                    width="100%"
+                    height="152"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    className="rounded-xl border-0"
+                  />
+                )
               )}
             </div>
+          )}
 
-            <div className="mb-3 flex items-start gap-2 rounded-xl border border-[#F8C8DC] bg-[#FFF8F3] px-3 py-2 text-xs leading-relaxed text-[#6F5564]">
-              <Info
-                className="mt-0.5 h-4 w-4 shrink-0 text-[#9E3C65]"
-                aria-hidden="true"
-              />
-              <div>
-                <p>
-                  <strong className="text-[#513B48]">
-                    Want the full song?
-                  </strong>{' '}
-                  Log in to Spotify in your browser and press{' '}
-                  <strong className="text-[#513B48]">Play</strong> directly
-                  inside the Spotify player below (guests without login hear a
-                  30-second preview).
-                </p>
-                <p className="mt-1">
-                  If Spotify asks you to sign in or won&apos;t play inside the
-                  embed, tap{' '}
-                  <strong className="text-[#513B48]">Open in Spotify</strong>{' '}
-                  above — or use the pink Turntable controls to keep music
-                  playing seamlessly across all birthday pages.
-                </p>
-              </div>
-            </div>
+          {hasYoutube && (
+            <div className="mt-5 rounded-2xl border border-[#EFA9C2] bg-white/95 p-4">
+              <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#FCE4EC] text-[#9E3C65]">
+                    <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <h2 className="text-sm font-bold text-[#513B48]">
+                    Official YouTube Player — {currentTrack?.title}
+                  </h2>
+                </div>
 
-            {/* Empty container managed solely by Spotify IFrame API when active */}
-            {spotifyState !== 'fallback' ? (
-              <div className="relative min-h-[152px] w-full overflow-hidden rounded-xl border border-[#F8C8DC] bg-[#FCE4EC]/45">
-                {spotifyState === 'loading' && (
-                  <div
-                    role="status"
-                    className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 px-4 text-center"
+                {currentTrack?.youtubeUrl && (
+                  <a
+                    href={currentTrack.youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[#EFA9C2] bg-[#FCE4EC]/75 px-3 py-1 text-xs font-semibold text-[#9E3C65] transition-colors hover:bg-[#F8C8DC]"
                   >
-                    <Headphones
-                      className="h-5 w-5 animate-pulse text-[#9E3C65]"
-                      aria-hidden="true"
-                    />
-                    <p className="text-xs font-semibold text-[#513B48]">
-                      Loading official Spotify player for {currentTrack?.title}…
-                    </p>
-                    <p className="text-[11px] text-[#6F5564]">
-                      Tap Open in Spotify anytime if your browser blocks embeds.
-                    </p>
-                  </div>
+                    <span>Open on YouTube</span>
+                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                  </a>
                 )}
-                <div ref={spotifyHostRef} className="min-h-[152px] w-full" />
               </div>
-            ) : (
-              currentTrack?.spotifyEmbedUrl && (
-                <iframe
-                  title={`Official Spotify player for ${currentTrack.title}`}
-                  src={currentTrack.spotifyEmbedUrl}
-                  width="100%"
-                  height="152"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  className="rounded-xl border-0"
+
+              <div className="mb-3 flex items-start gap-2 rounded-xl border border-[#F8C8DC] bg-[#FFF8F3] px-3 py-2 text-xs leading-relaxed text-[#6F5564]">
+                <Info
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[#9E3C65]"
+                  aria-hidden="true"
                 />
-              )
-            )}
-          </div>
+                <p>
+                  Official release by{' '}
+                  <strong className="text-[#513B48]">RH Rahat</strong> on
+                  YouTube. Use the pink Turntable controls above to keep it
+                  playing smoothly as you explore other birthday pages, or press{' '}
+                  <strong className="text-[#513B48]">Play</strong> directly in
+                  the player below.
+                </p>
+              </div>
+
+              {youtubeState !== 'fallback' ? (
+                <div className="relative min-h-[180px] w-full overflow-hidden rounded-xl border border-[#F8C8DC] bg-[#FCE4EC]/45">
+                  {youtubeState === 'loading' && (
+                    <div
+                      role="status"
+                      className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 px-4 text-center"
+                    >
+                      <PlayCircle
+                        className="h-5 w-5 animate-pulse text-[#9E3C65]"
+                        aria-hidden="true"
+                      />
+                      <p className="text-xs font-semibold text-[#513B48]">
+                        Loading official YouTube player for {currentTrack?.title}…
+                      </p>
+                    </div>
+                  )}
+                  <div ref={youtubeHostRef} className="min-h-[180px] w-full" />
+                </div>
+              ) : (
+                currentTrack?.youtubeEmbedUrl && (
+                  <iframe
+                    title={`Official YouTube player for ${currentTrack.title}`}
+                    src={currentTrack.youtubeEmbedUrl}
+                    width="100%"
+                    height="180"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    className="rounded-xl border-0"
+                  />
+                )
+              )}
+            </div>
+          )}
         </div>
 
         {/* Footer */}

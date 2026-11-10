@@ -104,6 +104,38 @@ export const birthdayConfig = {
           'https://open.spotify.com/embed/track/483U8EAfsAfp9J2r5et2rr?utm_source=generator',
         accent: '#E9DDF8',
       },
+      {
+        id: 'ooo-jaane-jana',
+        title: 'Ooo Jaane Jana',
+        artist: 'RH Rahat',
+        movie: 'Single',
+        note: 'Sweet acoustic-vibe track added specially for your playlist ✨',
+        duration: 21,
+        coverArt: 'https://i.ytimg.com/vi/9Ej9zkwJi1A/hqdefault.jpg',
+        youtubeId: '9Ej9zkwJi1A',
+        youtubeUrl: 'https://www.youtube.com/watch?v=9Ej9zkwJi1A',
+        youtubeEmbedUrl:
+          'https://www.youtube.com/embed/9Ej9zkwJi1A?enablejsapi=1&rel=0',
+        accent: '#F8C8DC',
+      },
+      {
+        id: 'zulfein',
+        title: 'Zulfein',
+        artist: 'Mehul Mahesh, Dj AYnik',
+        movie: 'Zulfein - Single',
+        note: 'Dreamy late-night melody to round out your birthday soundtrack 💖',
+        src: 'https://p.scdn.co/mp3-preview/3d455037b45d03dbd2f8d3a560cb26642c41637e',
+        fallbackSrc:
+          'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/47/3a/ea/473aeaa7-55cf-c203-2c7e-530b13b53b00/mzaf_8871076281904310201.plus.aac.p.m4a',
+        coverArt:
+          'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0224cf458ef905402e43dacb7e',
+        spotifyId: '6GK02ZOmn7hzEOWVc4YfwC',
+        spotifyUri: 'spotify:track:6GK02ZOmn7hzEOWVc4YfwC',
+        spotifyUrl: 'https://open.spotify.com/track/6GK02ZOmn7hzEOWVc4YfwC',
+        spotifyEmbedUrl:
+          'https://open.spotify.com/embed/track/6GK02ZOmn7hzEOWVc4YfwC?utm_source=generator',
+        accent: '#EFA9C2',
+      },
     ],
   },
 
