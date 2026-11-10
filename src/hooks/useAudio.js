@@ -6,7 +6,7 @@ let youtubeApiPromise = null;
 /**
  * Shared singleton loader for the official YouTube IFrame Player API.
  */
-export function loadYouTubeIframeApi(timeoutMs = 7000) {
+export function loadYouTubeIframeApi(timeoutMs = 15000) {
   if (typeof window === 'undefined') {
     return Promise.reject(new Error('Window unavailable'));
   }

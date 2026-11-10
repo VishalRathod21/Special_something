@@ -83,23 +83,6 @@ export const birthdayConfig = {
         accent: '#F8C8DC',
       },
       {
-        id: 'zulfein',
-        title: 'Zulfein',
-        artist: 'Mehul Mahesh, Dj AYnik',
-        movie: 'Zulfein - Single',
-        note: '15-second sweet highlight starting from the beginning 💖',
-        startSeconds: 0,
-        maxDuration: 15,
-        duration: 15,
-        coverArt:
-          'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0224cf458ef905402e43dacb7e',
-        youtubeId: '3YR2O6Ki1IE',
-        youtubeUrl: 'https://www.youtube.com/watch?v=3YR2O6Ki1IE',
-        youtubeEmbedUrl:
-          'https://www.youtube.com/embed/3YR2O6Ki1IE?enablejsapi=1&rel=0&start=0&end=15',
-        accent: '#E9DDF8',
-      },
-      {
         id: 'hosanna',
         title: 'Hosanna',
         artist: "A.R. Rahman, Leon D'souza, Suzanne D'Mello",
@@ -113,7 +96,7 @@ export const birthdayConfig = {
         youtubeUrl: 'https://www.youtube.com/watch?v=b8vDgqGNwKw&t=197s',
         youtubeEmbedUrl:
           'https://www.youtube.com/embed/b8vDgqGNwKw?enablejsapi=1&rel=0&start=197',
-        accent: '#F8C8DC',
+        accent: '#E9DDF8',
       },
     ],
   },
